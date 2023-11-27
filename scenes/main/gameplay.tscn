@@ -1,0 +1,257 @@
+[gd_scene load_steps=22 format=3 uid="uid://ca65djup4skul"]
+
+[ext_resource type="Script" path="res://scripts/managers/gameplay_manager.gd" id="1_leme2"]
+[ext_resource type="Script" path="res://scripts/parallax_bkg.gd" id="1_lxuje"]
+[ext_resource type="Script" path="res://scripts/managers/enemy_spawn_manager.gd" id="2_2mx1q"]
+[ext_resource type="Texture2D" uid="uid://hgk4x70obohf" path="res://sprites/backgrounds/bkg.png" id="2_bpiiu"]
+[ext_resource type="Texture2D" uid="uid://cnaylsxu0rpqb" path="res://sprites/backgrounds/layer_4.png" id="3_bv5by"]
+[ext_resource type="PackedScene" uid="uid://cgiql0mk7fuoc" path="res://scenes/entities/enemies/enemy_ship_1.tscn" id="3_kdgaa"]
+[ext_resource type="Script" path="res://scripts/managers/gameplay_hud_manager.gd" id="3_ommno"]
+[ext_resource type="Texture2D" uid="uid://c3e2rny7mr3gq" path="res://sprites/backgrounds/layer_3.png" id="4_uowx2"]
+[ext_resource type="PackedScene" uid="uid://ccbc4ecwy86d3" path="res://scenes/entities/enemies/enemy_ship_2.tscn" id="4_ymk3k"]
+[ext_resource type="Texture2D" uid="uid://diynu2m0e8yw1" path="res://sprites/backgrounds/layer_2.png" id="5_1s5cn"]
+[ext_resource type="PackedScene" uid="uid://c6s7ny34k08hh" path="res://scenes/entities/enemies/enemy_ship_3.tscn" id="5_w4rp4"]
+[ext_resource type="Texture2D" uid="uid://dkfrala85cyni" path="res://sprites/backgrounds/layer_1.png" id="6_qoow2"]
+[ext_resource type="AudioStream" uid="uid://c4fegtntabvbg" path="res://audio/game_over_fx.ogg" id="7_4yghc"]
+[ext_resource type="FontFile" uid="uid://b4mqeli8ockcx" path="res://fonts/kenvector_future_thin.ttf" id="8_i0tw0"]
+[ext_resource type="Texture2D" uid="uid://bcr3h4ynil3d7" path="res://sprites/ui/player_life_icon.png" id="9_if6bg"]
+[ext_resource type="PackedScene" uid="uid://bn1na8dl3vvmw" path="res://scenes/entities/player.tscn" id="10_bysp3"]
+[ext_resource type="Texture2D" uid="uid://3nfct2s6icfr" path="res://sprites/ui/godot_icon.png" id="10_nvt7h"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_51yue"]
+font = ExtResource("8_i0tw0")
+font_size = 36
+
+[sub_resource type="LabelSettings" id="LabelSettings_5wao6"]
+font = ExtResource("8_i0tw0")
+font_size = 36
+
+[sub_resource type="LabelSettings" id="LabelSettings_kqqfn"]
+font = ExtResource("8_i0tw0")
+font_size = 70
+
+[sub_resource type="LabelSettings" id="LabelSettings_jgsq1"]
+font = ExtResource("8_i0tw0")
+font_size = 36
+
+[node name="Gameplay" type="Node2D"]
+
+[node name="GameplayManager" type="Node" parent="." node_paths=PackedStringArray("projectiles_container", "enemies_container", "pickups_container", "score_timer")]
+script = ExtResource("1_leme2")
+projectiles_container = NodePath("../SpawnedObjects/ProjectilesContainer")
+enemies_container = NodePath("../SpawnedObjects/EnemiesContainer")
+pickups_container = NodePath("../SpawnedObjects/PickupsContainer")
+score_timer = NodePath("../Timers/ScoreTimer")
+
+[node name="EnemySpawner" type="Node" parent="GameplayManager" node_paths=PackedStringArray("spawn_positions", "spawn_timer")]
+script = ExtResource("2_2mx1q")
+enemy_ship_scenes = Array[PackedScene]([ExtResource("3_kdgaa"), ExtResource("4_ymk3k"), ExtResource("5_w4rp4")])
+spawn_positions = [NodePath("SpawnPos1"), NodePath("SpawnPos2"), NodePath("SpawnPos3"), NodePath("SpawnPos4"), NodePath("SpawnPos5")]
+spawn_timer = NodePath("../../Timers/SpawnerTimer")
+
+[node name="SpawnPos1" type="Marker2D" parent="GameplayManager/EnemySpawner"]
+position = Vector2(90, -30)
+
+[node name="SpawnPos2" type="Marker2D" parent="GameplayManager/EnemySpawner"]
+position = Vector2(175, -30)
+
+[node name="SpawnPos3" type="Marker2D" parent="GameplayManager/EnemySpawner"]
+position = Vector2(270, -30)
+
+[node name="SpawnPos4" type="Marker2D" parent="GameplayManager/EnemySpawner"]
+position = Vector2(365, -30)
+
+[node name="SpawnPos5" type="Marker2D" parent="GameplayManager/EnemySpawner"]
+position = Vector2(450, -30)
+
+[node name="HudManager" type="Node" parent="GameplayManager" node_paths=PackedStringArray("score_label", "fps_label", "hp_sprites", "game_over_label", "pickup_message_label")]
+script = ExtResource("3_ommno")
+score_label = NodePath("../../HUD/ScoreLabel")
+fps_label = NodePath("../../HUD/FPSLabel")
+hp_sprites = [NodePath("../../HUD/HPSprites/1"), NodePath("../../HUD/HPSprites/2"), NodePath("../../HUD/HPSprites/3")]
+game_over_audio = ExtResource("7_4yghc")
+game_over_label = NodePath("../../HUD/GameOverLabel")
+pickup_message_label = NodePath("../../HUD/PickupMessageLabel")
+
+[node name="SpawnedObjects" type="Node" parent="."]
+
+[node name="ProjectilesContainer" type="Node" parent="SpawnedObjects"]
+
+[node name="EnemiesContainer" type="Node" parent="SpawnedObjects"]
+
+[node name="PickupsContainer" type="Node" parent="SpawnedObjects"]
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="FPSTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+wait_time = 0.15
+one_shot = true
+
+[node name="ScoreTimer" type="Timer" parent="Timers"]
+one_shot = true
+
+[node name="PickupMessageTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+wait_time = 2.0
+one_shot = true
+
+[node name="SpawnerTimer" type="Timer" parent="Timers"]
+wait_time = 2.0
+one_shot = true
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="ScoreLabel" type="Label" parent="HUD"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -63.0
+offset_top = 5.0
+offset_right = 213.0
+offset_bottom = 75.0
+grow_horizontal = 2
+text = "Score:"
+label_settings = SubResource("LabelSettings_51yue")
+vertical_alignment = 1
+
+[node name="PickupMessageLabel" type="Label" parent="HUD"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -236.0
+offset_top = -67.0
+offset_right = 236.0
+offset_bottom = 67.0
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("LabelSettings_5wao6")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="GameOverLabel" type="Label" parent="HUD"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -244.0
+offset_top = -102.0
+offset_right = 244.0
+offset_bottom = 102.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+text = "GAME OVER"
+label_settings = SubResource("LabelSettings_kqqfn")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FPSLabel" type="Label" parent="HUD"]
+modulate = Color(1, 1, 1, 0.6)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -57.0
+offset_top = -51.0
+offset_right = 143.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "FPS"
+label_settings = SubResource("LabelSettings_jgsq1")
+vertical_alignment = 1
+
+[node name="HPSprites" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 393.0
+offset_bottom = 103.0
+
+[node name="1" type="Sprite2D" parent="HUD/HPSprites"]
+position = Vector2(48, 40)
+texture = ExtResource("9_if6bg")
+
+[node name="2" type="Sprite2D" parent="HUD/HPSprites"]
+position = Vector2(93, 40)
+texture = ExtResource("9_if6bg")
+
+[node name="3" type="Sprite2D" parent="HUD/HPSprites"]
+position = Vector2(137, 40)
+texture = ExtResource("9_if6bg")
+
+[node name="GodotLogo" type="Sprite2D" parent="HUD"]
+modulate = Color(1, 1, 1, 0.6)
+position = Vector2(477, 65)
+scale = Vector2(0.13, 0.13)
+texture = ExtResource("10_nvt7h")
+
+[node name="Background" type="ParallaxBackground" parent="."]
+offset = Vector2(270, 480)
+transform = Transform2D(1, 0, 0, 1, 270, 480)
+scroll_base_scale = Vector2(0, 1)
+script = ExtResource("1_lxuje")
+speed = 80.0
+
+[node name="BKG" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0, 0)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="Sprite" type="Sprite2D" parent="Background/BKG"]
+texture = ExtResource("2_bpiiu")
+
+[node name="Layer4" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0, 1)
+motion_mirroring = Vector2(0, 1152)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="Sprite" type="Sprite2D" parent="Background/Layer4"]
+texture = ExtResource("3_bv5by")
+
+[node name="Layer3" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0, 1)
+motion_mirroring = Vector2(0, 1152)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="Sprite" type="Sprite2D" parent="Background/Layer3"]
+texture = ExtResource("4_uowx2")
+
+[node name="Layer2" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0, 1)
+motion_mirroring = Vector2(0, 1152)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="Sprite" type="Sprite2D" parent="Background/Layer2"]
+texture = ExtResource("5_1s5cn")
+
+[node name="Layer1" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0, 1)
+motion_mirroring = Vector2(0, 1152)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="Sprite" type="Sprite2D" parent="Background/Layer1"]
+texture = ExtResource("6_qoow2")
+
+[node name="Player" parent="." instance=ExtResource("10_bysp3")]
+position = Vector2(270, 833)
+
+[connection signal="game_started" from="GameplayManager" to="GameplayManager/EnemySpawner" method="start_spawning"]
+[connection signal="player_died" from="GameplayManager" to="GameplayManager/EnemySpawner" method="stop_spawning"]
+[connection signal="player_died" from="GameplayManager" to="GameplayManager/HudManager" method="_on_player_died"]
+[connection signal="score_increased" from="GameplayManager" to="GameplayManager/HudManager" method="_on_score_updated"]
+[connection signal="timeout" from="Timers/FPSTimer" to="GameplayManager/HudManager" method="_on_fps_timer_timeout"]
+[connection signal="timeout" from="Timers/ScoreTimer" to="GameplayManager" method="_on_score_timer_timeout"]
+[connection signal="timeout" from="Timers/ScoreTimer" to="GameplayManager/EnemySpawner" method="_on_score_timer_timeout"]
+[connection signal="timeout" from="Timers/PickupMessageTimer" to="GameplayManager/HudManager" method="_on_pickup_message_timer_timeout"]
+[connection signal="timeout" from="Timers/SpawnerTimer" to="GameplayManager/EnemySpawner" method="_on_spawner_timer_timeout"]

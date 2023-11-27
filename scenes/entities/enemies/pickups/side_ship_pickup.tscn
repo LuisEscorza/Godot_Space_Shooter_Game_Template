@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://duenoboisagvh"]
+
+[ext_resource type="Script" path="res://scripts/pickups/side_ship_pickup.gd" id="1_25wfx"]
+[ext_resource type="AudioStream" uid="uid://d1486pu15s7nv" path="res://audio/pickup_fx.ogg" id="2_78rdc"]
+[ext_resource type="Texture2D" uid="uid://cxe7qwl4osmy6" path="res://sprites/pickups/side_ship_pickup.png" id="3_h8awm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3hg02"]
+size = Vector2(34, 34)
+
+[node name="SideShipPickup" type="Area2D"]
+rotation = 3.14159
+collision_layer = 16
+script = ExtResource("1_25wfx")
+_speed = 200.0
+_pickup_sound = ExtResource("2_78rdc")
+_pickup_message = "Picked up SideShip+!"
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_3hg02")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("3_h8awm")
+
+[node name="OnScreenNotifier" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(1.8, 1.8)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

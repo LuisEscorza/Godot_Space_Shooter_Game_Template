@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://deabdi8wyhleu"]
+
+[ext_resource type="Script" path="res://scripts/managers/audio_manager.gd" id="1_fpbe6"]
+
+[node name="AudioManager" type="Node" node_paths=PackedStringArray("sfx_players", "music_player")]
+script = ExtResource("1_fpbe6")
+sfx_players = [NodePath("SFXPlayers/Player1"), NodePath("SFXPlayers/Player2"), NodePath("SFXPlayers/Player3"), NodePath("SFXPlayers/Player4"), NodePath("SFXPlayers/Player5"), NodePath("SFXPlayers/Player6"), NodePath("SFXPlayers/Player7"), NodePath("SFXPlayers/Player8"), NodePath("SFXPlayers/Player9"), NodePath("SFXPlayers/Player10")]
+music_player = NodePath("MusicPlayer")
+
+[node name="SFXPlayers" type="Node" parent="."]
+
+[node name="Player1" type="AudioStreamPlayer2D" parent="SFXPlayers"]
+
+[node name="Player2" type="AudioStreamPlayer2D" parent="SFXPlayers"]
+
+[node name="Player3" type="AudioStreamPlayer2D" parent="SFXPlayers"]
+
+[node name="Player4" type="AudioStreamPlayer2D" parent="SFXPlayers"]
+
+[node name="Player5" type="AudioStreamPlayer2D" parent="SFXPlayers"]
+
+[node name="Player6" type="AudioStreamPlayer2D" parent="SFXPlayers"]
+
+[node name="Player7" type="AudioStreamPlayer2D" parent="SFXPlayers"]
+
+[node name="Player8" type="AudioStreamPlayer2D" parent="SFXPlayers"]
+
+[node name="Player9" type="AudioStreamPlayer2D" parent="SFXPlayers"]
+
+[node name="Player10" type="AudioStreamPlayer2D" parent="SFXPlayers"]
+
+[node name="MusicPlayer" type="AudioStreamPlayer2D" parent="."]

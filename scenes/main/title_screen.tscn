@@ -1,0 +1,97 @@
+[gd_scene load_steps=13 format=3 uid="uid://2l57negtu7ns"]
+
+[ext_resource type="Texture2D" uid="uid://hgk4x70obohf" path="res://sprites/backgrounds/bkg.png" id="1_rt07f"]
+[ext_resource type="Script" path="res://scripts/managers/title_screen_hud_manager.gd" id="1_s0f42"]
+[ext_resource type="PackedScene" uid="uid://ca65djup4skul" path="res://scenes/main/gameplay.tscn" id="2_as7va"]
+[ext_resource type="Texture2D" uid="uid://cnaylsxu0rpqb" path="res://sprites/backgrounds/layer_4.png" id="2_qxa26"]
+[ext_resource type="Texture2D" uid="uid://c3e2rny7mr3gq" path="res://sprites/backgrounds/layer_3.png" id="3_lmkjc"]
+[ext_resource type="Script" path="res://scripts/parallax_bkg.gd" id="3_psb3u"]
+[ext_resource type="Texture2D" uid="uid://diynu2m0e8yw1" path="res://sprites/backgrounds/layer_2.png" id="4_dl2ya"]
+[ext_resource type="Texture2D" uid="uid://dkfrala85cyni" path="res://sprites/backgrounds/layer_1.png" id="5_emp1v"]
+[ext_resource type="FontFile" uid="uid://b4mqeli8ockcx" path="res://fonts/kenvector_future_thin.ttf" id="8_kidos"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fxhs1"]
+bg_color = Color(0, 0.780392, 0.329412, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gffml"]
+bg_color = Color(0, 0.890196, 0.376471, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_inl5p"]
+bg_color = Color(0, 0.552941, 0.223529, 1)
+
+[node name="TitleScreen" type="Node2D"]
+
+[node name="HUDManager" type="Node" parent="."]
+script = ExtResource("1_s0f42")
+gameplay_scene = ExtResource("2_as7va")
+
+[node name="Background" type="ParallaxBackground" parent="."]
+offset = Vector2(270, 480)
+transform = Transform2D(1, 0, 0, 1, 270, 480)
+scroll_base_scale = Vector2(0, 1)
+script = ExtResource("3_psb3u")
+speed = 80.0
+
+[node name="BKG" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0, 0)
+
+[node name="Sprite" type="Sprite2D" parent="Background/BKG"]
+texture = ExtResource("1_rt07f")
+
+[node name="Layer4" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0, 1)
+motion_mirroring = Vector2(0, 1152)
+
+[node name="Sprite" type="Sprite2D" parent="Background/Layer4"]
+texture = ExtResource("2_qxa26")
+
+[node name="Layer3" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0, 1)
+motion_mirroring = Vector2(0, 1152)
+
+[node name="Sprite" type="Sprite2D" parent="Background/Layer3"]
+texture = ExtResource("3_lmkjc")
+
+[node name="Layer2" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0, 1)
+motion_mirroring = Vector2(0, 1152)
+
+[node name="Sprite" type="Sprite2D" parent="Background/Layer2"]
+texture = ExtResource("4_dl2ya")
+
+[node name="Layer1" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0, 1)
+motion_mirroring = Vector2(0, 1152)
+
+[node name="Sprite" type="Sprite2D" parent="Background/Layer1"]
+texture = ExtResource("5_emp1v")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="StartGameButton" type="Button" parent="HUD"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -214.0
+offset_top = -53.0
+offset_right = 214.0
+offset_bottom = 53.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("8_kidos")
+theme_override_font_sizes/font_size = 57
+theme_override_styles/normal = SubResource("StyleBoxFlat_fxhs1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_gffml")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_inl5p")
+text = "Start Game"
+
+[connection signal="pressed" from="HUD/StartGameButton" to="HUDManager" method="_on_start_game_button_pressed"]

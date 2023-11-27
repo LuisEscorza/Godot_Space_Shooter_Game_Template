@@ -1,0 +1,132 @@
+[gd_scene load_steps=17 format=3 uid="uid://bn1na8dl3vvmw"]
+
+[ext_resource type="Script" path="res://scripts/entities/player_base.gd" id="1_g652d"]
+[ext_resource type="Script" path="res://scripts/entities/player_movement.gd" id="2_s73rc"]
+[ext_resource type="Texture2D" uid="uid://6lfxrh5n8ah5" path="res://sprites/player/player_ship.png" id="3_bdpte"]
+[ext_resource type="Script" path="res://scripts/trail.gd" id="4_xyvuk"]
+[ext_resource type="Script" path="res://scripts/weapons/blaster.gd" id="5_4611v"]
+[ext_resource type="PackedScene" uid="uid://vmc113dgdbur" path="res://scenes/projectiles/blaster_projectile.tscn" id="6_8vpqh"]
+[ext_resource type="AudioStream" uid="uid://d02ftyvtdepmt" path="res://audio/laser1_fx.ogg" id="7_mhepu"]
+[ext_resource type="AudioStream" uid="uid://dajah88ivmm8w" path="res://audio/damage_fx.ogg" id="8_ip7pi"]
+[ext_resource type="Script" path="res://scripts/weapons/bomber.gd" id="9_5lgb7"]
+[ext_resource type="PackedScene" uid="uid://1knpyiik674d" path="res://scenes/projectiles/bomber_projectile.tscn" id="10_i4joi"]
+[ext_resource type="AudioStream" uid="uid://cgpbxjadh67h2" path="res://audio/laser2_fx.ogg" id="11_0rje0"]
+[ext_resource type="Script" path="res://scripts/weapons/side_ship.gd" id="12_mdiw2"]
+[ext_resource type="PackedScene" uid="uid://cap523atylqns" path="res://scenes/projectiles/side_ship_projectile.tscn" id="13_fulec"]
+[ext_resource type="PackedScene" uid="uid://dd7u1lathyaih" path="res://scenes/side_ship_instance.tscn" id="13_wq2if"]
+
+[sub_resource type="Curve" id="Curve_x8u88"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_gti0o"]
+offsets = PackedFloat32Array(0.343243, 0.702703)
+colors = PackedColorArray(0.210938, 0.730469, 0.957031, 1, 1, 1, 1, 0)
+
+[node name="Player" type="Node2D" node_paths=PackedStringArray("weapons")]
+rotation = 3.14159
+script = ExtResource("1_g652d")
+_base_health = 3
+_base_movement_speed = 400.0
+weapons = [NodePath("Weapons/Blaster"), NodePath("Weapons/Bomber"), NodePath("Weapons/SideShip")]
+
+[node name="Area" type="Area2D" parent="." groups=["damageables"]]
+collision_mask = 28
+script = ExtResource("2_s73rc")
+
+[node name="Collider" type="CollisionPolygon2D" parent="Area"]
+visible = false
+polygon = PackedVector2Array(0, 40, 55, -30, -55, -30)
+
+[node name="Weapons" type="Node2D" parent="."]
+
+[node name="Blaster" type="Node2D" parent="Weapons" node_paths=PackedStringArray("projectile_spawn_points")]
+script = ExtResource("5_4611v")
+_base_damage_value = 10
+_base_fire_rate = 0.7
+_base_projectile_speed = 700.0
+_base_projectile_scale = Vector2(1, 1)
+_base_level = 1
+max_level = 10
+projectile_scene = ExtResource("6_8vpqh")
+projectile_spawn_points = [NodePath("SpawnPoint_Left"), NodePath("SpawnPoint_Center"), NodePath("SpawnPoint_Right")]
+fire_audio = ExtResource("7_mhepu")
+hit_audio = ExtResource("8_ip7pi")
+
+[node name="SpawnPoint_Left" type="Marker2D" parent="Weapons/Blaster"]
+position = Vector2(25, 60)
+
+[node name="SpawnPoint_Center" type="Marker2D" parent="Weapons/Blaster"]
+position = Vector2(1.90735e-06, 70)
+
+[node name="SpawnPoint_Right" type="Marker2D" parent="Weapons/Blaster"]
+position = Vector2(-25, 60)
+
+[node name="Bomber" type="Node2D" parent="Weapons" node_paths=PackedStringArray("projectile_spawn_points")]
+script = ExtResource("9_5lgb7")
+_base_damage_value = 15
+_base_fire_rate = 1.6
+_base_projectile_speed = 300.0
+_base_projectile_scale = Vector2(1, 1)
+max_level = 10
+projectile_scene = ExtResource("10_i4joi")
+projectile_spawn_points = [NodePath("SpawnPoint_FarLeft"), NodePath("SpawnPoint_Left"), NodePath("SpawnPoint_Right"), NodePath("SpawnPoint_FarRight")]
+fire_audio = ExtResource("11_0rje0")
+hit_audio = ExtResource("8_ip7pi")
+
+[node name="SpawnPoint_FarLeft" type="Marker2D" parent="Weapons/Bomber"]
+position = Vector2(70, -7.62939e-06)
+rotation = -0.261799
+
+[node name="SpawnPoint_Left" type="Marker2D" parent="Weapons/Bomber"]
+position = Vector2(30, 30)
+rotation = -0.261799
+
+[node name="SpawnPoint_Right" type="Marker2D" parent="Weapons/Bomber"]
+position = Vector2(-30, 30)
+rotation = 0.261799
+
+[node name="SpawnPoint_FarRight" type="Marker2D" parent="Weapons/Bomber"]
+position = Vector2(-70, 7.62939e-06)
+rotation = 0.261799
+
+[node name="SideShip" type="Node2D" parent="Weapons" node_paths=PackedStringArray("side_ship_spawnpoints")]
+script = ExtResource("12_mdiw2")
+side_ship_scene = ExtResource("13_wq2if")
+side_ship_spawnpoints = [NodePath("SpawnPoint_FarLeft"), NodePath("SpawnPoint_Left"), NodePath("SpawnPoint_Right"), NodePath("SpawnPoint_FarRight")]
+_base_damage_value = 5
+_base_fire_rate = 1.3
+_base_projectile_speed = 550.0
+_base_projectile_scale = Vector2(1, 1)
+max_level = 10
+projectile_scene = ExtResource("13_fulec")
+fire_audio = ExtResource("7_mhepu")
+hit_audio = ExtResource("8_ip7pi")
+
+[node name="SpawnPoint_FarLeft" type="Marker2D" parent="Weapons/SideShip"]
+position = Vector2(135, -55)
+
+[node name="SpawnPoint_Left" type="Marker2D" parent="Weapons/SideShip"]
+position = Vector2(95, -25)
+
+[node name="SpawnPoint_Right" type="Marker2D" parent="Weapons/SideShip"]
+position = Vector2(-95, -25)
+
+[node name="SpawnPoint_FarRight" type="Marker2D" parent="Weapons/SideShip"]
+position = Vector2(-135, -55)
+
+[node name="Sprite" type="Sprite2D" parent="."]
+rotation = -3.14159
+texture = ExtResource("3_bdpte")
+
+[node name="Trail" type="Line2D" parent="."]
+z_index = -1
+position = Vector2(-1.99992, 0)
+width = 18.0
+width_curve = SubResource("Curve_x8u88")
+gradient = SubResource("Gradient_gti0o")
+script = ExtResource("4_xyvuk")
+length = 20
+negative_offset = false
+
+[connection signal="ready" from="." to="Area" method="_on_player_ready"]

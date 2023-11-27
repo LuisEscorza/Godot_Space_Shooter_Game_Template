@@ -1,0 +1,111 @@
+[gd_scene load_steps=16 format=3 uid="uid://c6s7ny34k08hh"]
+
+[ext_resource type="Script" path="res://scripts/entities/enemy_base.gd" id="1_pevqg"]
+[ext_resource type="PackedScene" uid="uid://6hf478v7f73c" path="res://scenes/entities/enemies/pickups/medkit_pickup.tscn" id="2_c2duu"]
+[ext_resource type="PackedScene" uid="uid://cmb44q0syfahv" path="res://scenes/entities/enemies/pickups/blaster_pickup.tscn" id="3_10y2p"]
+[ext_resource type="PackedScene" uid="uid://dgk3jp8knw4pt" path="res://scenes/entities/enemies/pickups/bomber_pickup.tscn" id="4_8jgem"]
+[ext_resource type="PackedScene" uid="uid://duenoboisagvh" path="res://scenes/entities/enemies/pickups/side_ship_pickup.tscn" id="5_tlxqg"]
+[ext_resource type="Script" path="res://scripts/entities/enemy_movement.gd" id="6_64o1m"]
+[ext_resource type="Texture2D" uid="uid://cevcx5f6a6pfd" path="res://sprites/enemy_ships/enemy_red.png" id="7_exl8b"]
+[ext_resource type="Script" path="res://scripts/weapons/enemy_blaster.gd" id="8_vuav4"]
+[ext_resource type="PackedScene" uid="uid://8jxj8sd28sv2" path="res://scenes/projectiles/enemy_projectile_3.tscn" id="9_1i0xj"]
+[ext_resource type="AudioStream" uid="uid://dxdemr4qcfm0e" path="res://audio/enemy_laser_fx.ogg" id="10_f7clr"]
+[ext_resource type="AudioStream" uid="uid://dajah88ivmm8w" path="res://audio/damage_fx.ogg" id="11_b7qpa"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lrofd"]
+radius = 47.0106
+
+[sub_resource type="Curve" id="Curve_mnwqr"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_dnr74"]
+offsets = PackedFloat32Array(0.291892, 0.775676)
+colors = PackedColorArray(0.733333, 0.423529, 0.180392, 1, 1, 1, 1, 0)
+
+[sub_resource type="GDScript" id="GDScript_2dvql"]
+script/source = "extends Line2D
+
+@export_category('Trail Values')
+@export var length : = 10
+@export var negative_offset : bool = true
+
+@onready var parent : Node2D = get_parent()
+var offset : = Vector2.ZERO
+
+func _ready() -> void:
+	if negative_offset:
+		offset = -position
+	else: offset = position
+	top_level = true
+
+func _physics_process(_delta: float) -> void:
+	global_position = Vector2.ZERO
+	
+	var point : = parent.global_position + offset
+	add_point(point, 0)
+	
+	if get_point_count() > length:
+		remove_point(get_point_count() - 1)
+
+
+func on_set_trail_for_clear():
+	clear_points()
+"
+
+[node name="Enemy" type="Node2D" node_paths=PackedStringArray("weapons")]
+rotation = 3.14159
+script = ExtResource("1_pevqg")
+_score_reward = 50
+pickup_scenes = Array[PackedScene]([ExtResource("2_c2duu"), ExtResource("3_10y2p"), ExtResource("4_8jgem"), ExtResource("5_tlxqg")])
+_base_health = 65
+_base_movement_speed = 180.0
+weapons = [NodePath("Weapons/EnemyBlaster")]
+
+[node name="Area" type="Area2D" parent="." groups=["damageables"]]
+unique_name_in_owner = true
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("6_64o1m")
+
+[node name="Collider" type="CollisionShape2D" parent="Area"]
+visible = false
+shape = SubResource("CircleShape2D_lrofd")
+
+[node name="Weapons" type="Node2D" parent="."]
+
+[node name="EnemyBlaster" type="Node2D" parent="Weapons" node_paths=PackedStringArray("projectile_spawn_points")]
+script = ExtResource("8_vuav4")
+_base_damage_value = 1
+_base_fire_rate = 0.8
+_base_projectile_speed = 350.0
+_base_projectile_scale = Vector2(1, 1)
+_base_level = 1
+max_level = 1
+projectile_scene = ExtResource("9_1i0xj")
+projectile_spawn_points = [NodePath("ProjectileSpawnPoint")]
+fire_audio = ExtResource("10_f7clr")
+hit_audio = ExtResource("11_b7qpa")
+
+[node name="ProjectileSpawnPoint" type="Marker2D" parent="Weapons/EnemyBlaster"]
+position = Vector2(0, 70)
+
+[node name="OnScreenNotifier" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(4.84276, 4.49628)
+
+[node name="Trail" type="Line2D" parent="."]
+z_index = -1
+position = Vector2(8.74155e-07, -20)
+width = 18.0
+width_curve = SubResource("Curve_mnwqr")
+gradient = SubResource("Gradient_dnr74")
+script = SubResource("GDScript_2dvql")
+length = 60
+negative_offset = false
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("7_exl8b")
+
+[connection signal="ready" from="." to="Area" method="_on_enemy_ready"]
+[connection signal="area_entered" from="Area" to="." method="_on_area_entered"]
+[connection signal="screen_exited" from="OnScreenNotifier" to="Area" method="_on_on_screen_notifier_screen_exited"]

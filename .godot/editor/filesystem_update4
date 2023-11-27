@@ -1,0 +1,6 @@
+res://scenes/projectiles/blaster_projectile.tscn
+res://scripts/pickups/blaster_pickup.gd
+res://scripts/pickups/bomber_pickup.gd
+res://scripts/entities/enemy_movement.gd
+res://scripts/managers/globals.gd
+res://scripts/trail.gd

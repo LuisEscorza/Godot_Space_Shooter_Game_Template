@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://6hf478v7f73c"]
+
+[ext_resource type="Script" path="res://scripts/pickups/medkit_pickup.gd" id="1_fvenq"]
+[ext_resource type="AudioStream" uid="uid://d1486pu15s7nv" path="res://audio/pickup_fx.ogg" id="2_c1vkg"]
+[ext_resource type="Texture2D" uid="uid://6vgr7mm1etl7" path="res://sprites/pickups/medkit_pickup.png" id="3_yoyb2"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2kolw"]
+radius = 7.03852
+height = 28.4232
+
+[node name="SideShipPickup" type="Area2D"]
+rotation = 3.14159
+collision_layer = 16
+script = ExtResource("1_fvenq")
+_speed = 200.0
+_pickup_sound = ExtResource("2_c1vkg")
+_pickup_message = "Picked up Medkit+!"
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+rotation = 0.872665
+shape = SubResource("CapsuleShape2D_2kolw")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("3_yoyb2")
+
+[node name="OnScreenNotifier" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(1.35405, 1.25742)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

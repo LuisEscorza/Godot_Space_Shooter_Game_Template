@@ -1,0 +1,81 @@
+[gd_scene load_steps=8 format=3 uid="uid://ctxumvhycasnt"]
+
+[ext_resource type="Script" path="res://scripts/weapons/projectile_base.gd" id="1_y11v2"]
+[ext_resource type="Script" path="res://scripts/weapons/projectile_movement.gd" id="3_1a74u"]
+[ext_resource type="Texture2D" uid="uid://cy73fmitoe5ni" path="res://sprites/lasers/enemy_projectile_2.png" id="4_e78ps"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_unbsl"]
+size = Vector2(13.9999, 38)
+
+[sub_resource type="Curve" id="Curve_mnwqr"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_4vki6"]
+offsets = PackedFloat32Array(0.337838, 0.702703)
+colors = PackedColorArray(0.435294, 0.768627, 0.215686, 1, 1, 1, 1, 0)
+
+[sub_resource type="GDScript" id="GDScript_2dvql"]
+script/source = "extends Line2D
+
+@export_category('Trail Values')
+@export var length : = 10
+@export var negative_offset : bool = true
+
+@onready var parent : Node2D = get_parent()
+var offset : = Vector2.ZERO
+
+func _ready() -> void:
+	if negative_offset:
+		offset = -position
+	else: offset = position
+	top_level = true
+
+func _physics_process(_delta: float) -> void:
+	global_position = Vector2.ZERO
+	
+	var point : = parent.global_position + offset
+	add_point(point, 0)
+	
+	if get_point_count() > length:
+		remove_point(get_point_count() - 1)
+
+
+func on_set_trail_for_clear():
+	clear_points()
+"
+
+[node name="Projectile" type="Node2D"]
+rotation = 3.14159
+script = ExtResource("1_y11v2")
+
+[node name="Area" type="Area2D" parent="." groups=["damageables"]]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("3_1a74u")
+
+[node name="Collider" type="CollisionShape2D" parent="Area"]
+unique_name_in_owner = true
+shape = SubResource("RectangleShape2D_unbsl")
+
+[node name="OnScreenNotifier" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(0.867833, 2.00569)
+
+[node name="Trail" type="Line2D" parent="."]
+unique_name_in_owner = true
+z_index = -1
+position = Vector2(0.500003, 14)
+width = 12.0
+width_curve = SubResource("Curve_mnwqr")
+gradient = SubResource("Gradient_4vki6")
+script = SubResource("GDScript_2dvql")
+length = 12
+
+[node name="Sprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+rotation = 3.14159
+texture = ExtResource("4_e78ps")
+
+[connection signal="ready" from="." to="Area" method="_on_projectile_ready"]
+[connection signal="area_entered" from="Area" to="." method="_on_area_entered"]
+[connection signal="screen_exited" from="OnScreenNotifier" to="." method="_on_on_screen_notifier_screen_exited"]
